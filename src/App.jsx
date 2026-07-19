@@ -241,19 +241,21 @@ export default function App() {
                     {/* Left: Sentence & Main Image */}
                     <div className="w-[55%] border-r-4 border-black p-6 flex flex-col relative bg-[#F9F9F9]">
                       <h1 className="text-4xl font-medium tracking-wide leading-tight">
-                        {words.map((word, i) => (
-                          <span key={i} className={i === colorWordIndex ? 'text-yellow-500 font-bold' : ''}>
-                            {word}{' '}
-                          </span>
-                        ))}
+                        {words.map((word, i) => {
+                          const isColorWord = i === colorWordIndex;
+                          const exactColor = isColorWord ? data.colorWord.toLowerCase() : 'inherit';
+                          return (
+                            <span 
+                              key={i} 
+                              style={isColorWord ? { color: exactColor, fontWeight: 'bold' } : {}}
+                            >
+                              {word}{' '}
+                            </span>
+                          );
+                        })}
                       </h1>
-                      <div className="flex-grow flex items-center justify-center p-4">
-                        <img 
-                          src={`https://image.pollinations.ai/prompt/${encodeURIComponent(data.sentence + ", simple 2d cartoon drawing for kids, bold solid colors, white background, educational illustration")}?width=400&height=400&nologo=true`}
-                          alt={data.sentence}
-                          className="max-h-full max-w-full object-contain rounded-xl shadow-sm border-2 border-gray-100"
-                          crossOrigin="anonymous"
-                        />
+                      <div className="flex-grow flex items-center justify-center pb-4">
+                        <span style={{ fontSize: '130px' }} className="leading-none drop-shadow-md">{data.mainEmoji}</span>
                       </div>
                     </div>
 
