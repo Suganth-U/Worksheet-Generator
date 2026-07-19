@@ -293,7 +293,7 @@ export default function App() {
                             : `https://image.pollinations.ai/prompt/${encodeURIComponent(mainImagePrompt + ", extremely cute simple 2d flat vector illustration for kids, bold solid colors, white background, perfectly symmetrical, flawless, no deformed features, high quality educational clipart")}?width=1024&height=1024&nologo=true&enhance=false`}
                           delay={0}
                           alt={data.sentence}
-                          className="max-h-[300px] max-w-full object-contain rounded-xl shadow-sm border-2 border-gray-100 bg-white relative z-10"
+                          className="w-full h-full object-contain rounded-xl shadow-sm border-2 border-gray-100 bg-white relative z-10 p-2"
                           onLoad={(e) => {
                             setImagesLoadingCount(prev => Math.max(0, prev - 1));
                             const loader = e.target?.previousSibling?.previousSibling;
