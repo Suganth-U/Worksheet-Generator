@@ -30,6 +30,7 @@ export default function App() {
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [imagesLoadingCount, setImagesLoadingCount] = useState(0);
+  const [generateId, setGenerateId] = useState(0);
   const [sentenceInput, setSentenceInput] = useState('The yellow sun shines.');
   const [error, setError] = useState('');
   const [scale, setScale] = useState(1);
@@ -84,6 +85,8 @@ export default function App() {
     const cacheKey = `worksheet_cache_v4_${sentenceInput.trim().toLowerCase()}`;
     const cachedData = sessionStorage.getItem(cacheKey);
     
+    setGenerateId(prev => prev + 1);
+    
     if (cachedData) {
       const parsed = JSON.parse(cachedData);
       setData({
@@ -122,9 +125,9 @@ export default function App() {
         ],
         "q3": "A multiple choice question about the action (What does it do?)",
         "q3Options": [
-          {"text": "wrong option", "imagePrompt": "short description of the subject doing this wrong action", "isCorrect": false},
-          {"text": "correct option", "imagePrompt": "short description of the subject doing the correct action", "isCorrect": true},
-          {"text": "wrong option", "imagePrompt": "short description of the subject doing this wrong action", "isCorrect": false}
+          {"text": "wrong option", "imagePrompt": "short description of the subject doing this wrong action", "emoji": "single emoji", "isCorrect": false},
+          {"text": "correct option", "imagePrompt": "short description of the subject doing the correct action", "emoji": "single emoji", "isCorrect": true},
+          {"text": "wrong option", "imagePrompt": "short description of the subject doing this wrong action", "emoji": "single emoji", "isCorrect": false}
         ]
       }
       
@@ -287,10 +290,11 @@ export default function App() {
                             <span className="text-sm text-gray-400 font-medium">Painting image...</span>
                           </div>
                         )}
-                        <span id="emoji-fallback" style={{ fontSize: '130px', display: 'none' }} className="leading-none drop-shadow-md absolute inset-0 flex items-center justify-center">
+                        <span id="emoji-fallback" style={{ fontSize: '260px', display: 'none' }} className="leading-none drop-shadow-md absolute inset-0 flex items-center justify-center">
                           {data.mainEmoji}
                         </span>
                         <DelayedImage 
+                          key={`main-${generateId}`}
                           src={data.sentence === 'The yellow sun shines.' 
                             ? '/sun.png'
                             : `https://image.pollinations.ai/prompt/${encodeURIComponent(mainImagePrompt + ", extremely cute simple 2d flat vector illustration for kids, bold solid colors, white background, perfectly symmetrical, flawless, no deformed features, high quality educational clipart")}?width=1024&height=1024&nologo=true&enhance=false&seed=42`}
@@ -388,16 +392,20 @@ export default function App() {
                         {data.q3Options.map((opt, i) => (
                           <div key={i} className="flex flex-row items-center gap-4 w-full">
                             {opt.imagePrompt ? (
-                              <div className="w-16 h-16 flex items-center justify-center bg-gray-50 rounded-md">
+                              <div className="w-16 h-16 flex items-center justify-center bg-gray-50 rounded-md relative">
+                                <span className="text-4xl drop-shadow-sm w-12 text-center absolute" style={{display: 'none'}}>{opt.emoji || data.mainEmoji || '❓'}</span>
                                 <DelayedImage 
+                                  key={`q3-${i}-${generateId}`}
                                   src={`https://image.pollinations.ai/prompt/${encodeURIComponent(opt.imagePrompt + ", extremely cute simple 2d flat vector illustration for kids, bold solid colors, white background, perfectly symmetrical, isolated, no background, high resolution, soft lighting")}?width=120&height=120&nologo=true&enhance=false&model=turbo&seed=42`}
                                   delay={(i + 1) * 1200}
                                   alt={opt.text}
-                                  className="w-full h-full object-contain rounded-md"
+                                  className="w-full h-full object-contain rounded-md relative z-10"
                                   onLoad={() => setImagesLoadingCount(prev => Math.max(0, prev - 1))}
                                   onError={(e) => {
                                     setImagesLoadingCount(prev => Math.max(0, prev - 1));
                                     if (e.target) e.target.style.display = 'none';
+                                    const fallback = e.target?.previousSibling;
+                                    if (fallback) fallback.style.display = 'block';
                                   }}
                                 />
                               </div>
