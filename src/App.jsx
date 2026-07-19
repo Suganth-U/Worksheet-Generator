@@ -260,20 +260,27 @@ export default function App() {
                         })}
                       </h1>
                       <div className="flex-grow flex items-center justify-center pb-4 relative min-h-[200px]">
-                        <span id="emoji-fallback" style={{ fontSize: '130px' }} className="leading-none drop-shadow-md absolute inset-0 flex items-center justify-center">
+                        {!isGenerating && (
+                          <div className="absolute inset-0 flex flex-col items-center justify-center z-20 bg-[#F9F9F9] pointer-events-none" id="image-loader">
+                            <Loader2 className="w-8 h-8 animate-spin text-gray-400 mb-2" />
+                            <span className="text-sm text-gray-400 font-medium">Painting image...</span>
+                          </div>
+                        )}
+                        <span id="emoji-fallback" style={{ fontSize: '130px', display: 'none' }} className="leading-none drop-shadow-md absolute inset-0 flex items-center justify-center">
                           {data.mainEmoji}
                         </span>
                         <img 
-                          src={`https://image.pollinations.ai/prompt/${encodeURIComponent(data.sentence + ", extremely cute simple 2d flat vector illustration for kids, bold solid colors, white background, perfectly symmetrical, flawless, no deformed features, high quality educational clipart")}?width=400&height=400&nologo=true&model=flux`}
+                          src={`https://image.pollinations.ai/prompt/${encodeURIComponent(data.sentence + ", extremely cute simple 2d flat vector illustration for kids, bold solid colors, white background, perfectly symmetrical, flawless, no deformed features, high quality educational clipart")}?width=400&height=400&nologo=true`}
                           alt={data.sentence}
-                          className="max-h-[300px] max-w-full object-contain rounded-xl shadow-sm border-2 border-gray-100 bg-white relative z-10 opacity-0 transition-opacity duration-500"
+                          className="max-h-[300px] max-w-full object-contain rounded-xl shadow-sm border-2 border-gray-100 bg-white relative z-10"
                           onLoad={(e) => {
-                            e.target.style.opacity = '1';
-                            const fallback = e.target.previousSibling;
-                            if (fallback) fallback.style.display = 'none';
+                            const loader = e.target.previousSibling.previousSibling;
+                            if (loader && loader.id === 'image-loader') loader.style.display = 'none';
                           }}
                           onError={(e) => {
                             e.target.style.display = 'none';
+                            const loader = e.target.previousSibling.previousSibling;
+                            if (loader && loader.id === 'image-loader') loader.style.display = 'none';
                             const fallback = e.target.previousSibling;
                             if (fallback) fallback.style.display = 'flex';
                           }}
