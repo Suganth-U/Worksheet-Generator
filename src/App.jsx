@@ -270,7 +270,7 @@ export default function App() {
                           {data.mainEmoji}
                         </span>
                         <img 
-                          src={`https://image.pollinations.ai/prompt/${encodeURIComponent(data.sentence + ", extremely cute simple 2d flat vector illustration for kids, bold solid colors, white background, perfectly symmetrical, flawless, no deformed features, high quality educational clipart")}?width=400&height=400&nologo=true`}
+                          src={`https://image.pollinations.ai/prompt/${encodeURIComponent(data.sentence + ", extremely cute simple 2d flat vector illustration for kids, bold solid colors, white background, perfectly symmetrical, flawless, no deformed features, high quality educational clipart")}?width=400&height=400&nologo=true&enhance=false`}
                           alt={data.sentence}
                           className="max-h-[300px] max-w-full object-contain rounded-xl shadow-sm border-2 border-gray-100 bg-white relative z-10"
                           onLoad={(e) => {
