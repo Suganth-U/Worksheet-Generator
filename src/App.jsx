@@ -356,7 +356,7 @@ export default function App() {
                           <div key={i} className="flex flex-row items-center gap-4 w-full">
                             {opt.imagePrompt ? (
                               <img 
-                                src={`https://image.pollinations.ai/prompt/${encodeURIComponent(opt.imagePrompt + ", extremely cute simple 2d flat vector illustration for kids, bold solid colors, white background, perfectly symmetrical, isolated, no background, high resolution, soft lighting")}&width=120&height=120&nologo=true&enhance=false&model=turbo`}
+                                src={`https://image.pollinations.ai/prompt/${encodeURIComponent(opt.imagePrompt + ", extremely cute simple 2d flat vector illustration for kids, bold solid colors, white background, perfectly symmetrical, isolated, no background, high resolution, soft lighting")}?width=120&height=120&nologo=true&enhance=false&model=turbo`}
                                 alt={opt.text}
                                 className="w-16 h-16 object-contain rounded-md"
                                 crossOrigin="anonymous"
