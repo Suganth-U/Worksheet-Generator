@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import { Printer, Sparkles, Loader2 } from 'lucide-react';
 import { puter } from '@heyputer/puter.js';
+puter.quiet = true;
 
 const A4_WIDTH_MM = 210;
 const A4_HEIGHT_MM = 297;
@@ -115,7 +116,7 @@ export default function App() {
       `;
 
       resultText = await puter.ai.chat(prompt, {
-        model: 'gemini-1.5-flash'
+        model: 'gemini-3.5-flash'
       });
 
       // Strip markdown code blocks if the AI accidentally includes them
