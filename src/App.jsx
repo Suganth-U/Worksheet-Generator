@@ -265,8 +265,8 @@ export default function App() {
                   <div className="flex border-b-4 border-black h-[48%] bg-white">
                     
                     {/* Left: Sentence & Main Image */}
-                    <div className="w-[55%] border-r-4 border-black p-6 flex flex-col relative bg-[#F9F9F9]">
-                      <h1 className="text-4xl font-medium tracking-wide leading-tight">
+                    <div className="w-[55%] border-r-4 border-black p-4 flex flex-col relative bg-[#F9F9F9]">
+                      <h1 className="text-4xl font-medium tracking-wide leading-tight mb-2">
                         {words.map((word, i) => {
                           const isColorWord = i === colorWordIndex;
                           const exactColor = isColorWord ? data.colorWord.toLowerCase() : 'inherit';
@@ -280,7 +280,7 @@ export default function App() {
                           );
                         })}
                       </h1>
-                      <div className="flex-grow flex items-center justify-center pb-4 relative min-h-[200px]">
+                      <div className="flex-grow flex items-center justify-center pb-2 relative min-h-[200px]">
                         {!isGenerating && (
                           <div className="absolute inset-0 flex flex-col items-center justify-center z-20 bg-[#F9F9F9] pointer-events-none" id="image-loader">
                             <Loader2 className="w-8 h-8 animate-spin text-gray-400 mb-2" />
@@ -296,7 +296,7 @@ export default function App() {
                             : `https://image.pollinations.ai/prompt/${encodeURIComponent(mainImagePrompt + ", extremely cute simple 2d flat vector illustration for kids, bold solid colors, white background, perfectly symmetrical, flawless, no deformed features, high quality educational clipart")}?width=1024&height=1024&nologo=true&enhance=false&seed=42`}
                           delay={0}
                           alt={data.sentence}
-                          className="w-full h-full object-contain rounded-xl shadow-sm border-2 border-gray-100 bg-white relative z-10 p-2"
+                          className="w-full h-full object-contain rounded-xl shadow-sm border-2 border-gray-100 bg-white relative z-10"
                           onLoad={(e) => {
                             setImagesLoadingCount(prev => Math.max(0, prev - 1));
                             const loader = e.target?.previousSibling?.previousSibling;
