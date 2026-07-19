@@ -105,14 +105,14 @@ export default function App() {
         ],
         "q3": "A multiple choice question about the action (What does it do?)",
         "q3Options": [
-          {"text": "wrong option", "emoji": "single emoji"},
-          {"text": "correct option", "emoji": "single emoji"},
-          {"text": "wrong option", "emoji": "single emoji"}
+          {"text": "wrong option", "imagePrompt": "short description of the subject doing this wrong action"},
+          {"text": "correct option", "imagePrompt": "short description of the subject doing the correct action"},
+          {"text": "wrong option", "imagePrompt": "short description of the subject doing this wrong action"}
         ]
       }
       
       CRITICAL: Ensure the response is ONLY valid JSON. Do not include markdown code blocks like \`\`\`json. Make sure options are randomized so the correct answer isn't always in the same spot. 
-      For action questions (q3), the text for the options MUST explicitly name the main subject doing the action, rather than using pronouns (e.g., use "A parrot crawls" instead of "It crawls"). The emoji MUST visually represent the specific ACTION in that option (e.g., if the option is "A parrot swims", use 🐟 or 🏊; if "A parrot flies", use 🦅 or ✈️; if "A parrot crawls", use 🐛). Do NOT just repeat the main subject emoji for all three options.
+      For action questions (q3), provide a short "imagePrompt" string for each option (e.g., "A green parrot crawling", "A green parrot flying", "A green parrot swimming"). Make it specific to the subject.
       `;
 
       resultText = await puter.ai.chat(prompt, {
@@ -354,7 +354,16 @@ export default function App() {
                       <div className="flex-grow flex flex-col justify-evenly py-2 px-6 bg-white">
                         {data.q3Options.map((opt, i) => (
                           <div key={i} className="flex flex-row items-center gap-4 w-full">
-                            <span className="text-4xl drop-shadow-sm w-12 text-center">{opt.emoji}</span>
+                            {opt.imagePrompt ? (
+                              <img 
+                                src={`https://image.pollinations.ai/prompt/${encodeURIComponent(opt.imagePrompt + ", extremely cute simple 2d flat vector illustration for kids, bold solid colors, white background, perfectly symmetrical, isolated, no background, high resolution, soft lighting")}&width=120&height=120&nologo=true&enhance=false&model=turbo`}
+                                alt={opt.text}
+                                className="w-16 h-16 object-contain rounded-md"
+                                crossOrigin="anonymous"
+                              />
+                            ) : (
+                              <span className="text-4xl drop-shadow-sm w-12 text-center">{opt.emoji}</span>
+                            )}
                             <span className="font-medium text-xl leading-tight tracking-wide">{opt.text}</span>
                           </div>
                         ))}
