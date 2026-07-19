@@ -106,13 +106,13 @@ export default function App() {
         model: 'gemini-3.5-flash',
         contents: prompt,
         config: {
+          maxOutputTokens: 1000,
           responseMimeType: 'application/json',
           responseSchema: {
             type: Type.OBJECT,
             properties: {
               colorWord: { type: Type.STRING },
               mainEmoji: { type: Type.STRING },
-              actionWord: { type: Type.STRING },
               q1: { type: Type.STRING },
               q1Options: { 
                 type: Type.ARRAY, 
