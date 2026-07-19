@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import { Printer, Sparkles, Loader2 } from 'lucide-react';
-import { GoogleGenAI, Type } from '@google/genai';
+import { puter } from '@heyputer/puter.js';
 
 const A4_WIDTH_MM = 210;
 const A4_HEIGHT_MM = 297;
@@ -82,21 +82,19 @@ export default function App() {
 
     let resultText = '';
     try {
-      const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
-      
       const prompt = `
-      You are an expert worksheet creator for children with autism. 
-      The user has provided a simple sentence: "${sentenceInput}".
-      
-      Generate a JSON response that maps to this exact structure:
+      You are an expert worksheet generator for children.
+      Generate a simple reading comprehension worksheet based on this sentence: "${sentenceInput}"
+
+      Return a JSON object with this exact structure:
       {
-        "colorWord": "One key adjective or noun from the sentence to highlight in bold color",
-        "mainEmoji": "One single emoji that represents the main subject of the sentence",
-        "q1": "A multiple choice question about an adjective or color in the sentence",
+        "colorWord": "The color mentioned in the sentence (e.g., green, red, blue)",
+        "mainEmoji": "A single emoji representing the main subject",
+        "q1": "A multiple choice question about the color (What color is...?)",
         "q1Options": [
-          {"text": "wrong option", "emoji": "single emoji"},
-          {"text": "correct option", "emoji": "single emoji"},
-          {"text": "wrong option", "emoji": "single emoji"}
+          {"text": "wrong color", "emoji": "🔴"},
+          {"text": "correct color", "emoji": "🟢"},
+          {"text": "wrong color", "emoji": "🔵"}
         ],
         "q2": "A multiple choice question about the main subject (What do you see?)",
         "q2Options": [
@@ -112,41 +110,21 @@ export default function App() {
         ]
       }
       
-      CRITICAL: Ensure the response is ONLY valid JSON. Make sure options are randomized so the correct answer isn't always in the same spot. 
+      CRITICAL: Ensure the response is ONLY valid JSON. Do not include markdown code blocks like \`\`\`json. Make sure options are randomized so the correct answer isn't always in the same spot. 
       For action questions (q3), use an emoji that makes sense for the subject (e.g., if a frog jumps, use a frog 🐸, not a kangaroo 🦘).
       `;
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-1.5-flash',
-        contents: prompt,
-        config: {
-          responseMimeType: 'application/json',
-          responseSchema: {
-            type: Type.OBJECT,
-            properties: {
-              colorWord: { type: Type.STRING },
-              mainEmoji: { type: Type.STRING },
-              q1: { type: Type.STRING },
-              q1Options: { 
-                type: Type.ARRAY, 
-                items: { type: Type.OBJECT, properties: { text: { type: Type.STRING }, emoji: { type: Type.STRING } } } 
-              },
-              q2: { type: Type.STRING },
-              q2Options: { 
-                type: Type.ARRAY, 
-                items: { type: Type.OBJECT, properties: { text: { type: Type.STRING }, emoji: { type: Type.STRING } } } 
-              },
-              q3: { type: Type.STRING },
-              q3Options: { 
-                type: Type.ARRAY, 
-                items: { type: Type.OBJECT, properties: { text: { type: Type.STRING }, emoji: { type: Type.STRING } } } 
-              }
-            }
-          }
-        }
+      resultText = await puter.ai.chat(prompt, {
+        model: 'gemini-1.5-flash'
       });
 
-      resultText = response.text;
+      // Strip markdown code blocks if the AI accidentally includes them
+      if (typeof resultText === 'string') {
+        resultText = resultText.replace(/^```json/i, '').replace(/```$/i, '').trim();
+      } else if (resultText && resultText.text) {
+        resultText = resultText.text.replace(/^```json/i, '').replace(/```$/i, '').trim();
+      }
+
       const parsedData = JSON.parse(resultText);
       sessionStorage.setItem(cacheKey, JSON.stringify(parsedData));
 
