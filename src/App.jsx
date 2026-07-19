@@ -16,6 +16,7 @@ export default function App() {
   });
 
   const [isGenerating, setIsGenerating] = useState(false);
+  const [imagesLoadingCount, setImagesLoadingCount] = useState(0);
   const [sentenceInput, setSentenceInput] = useState('The yellow sun shines.');
   const [error, setError] = useState('');
   const [scale, setScale] = useState(1);
@@ -56,8 +57,8 @@ export default function App() {
     ],
     q3: 'What does the sun do?',
     q3Options: [
-      { text: 'hides', emoji: '☁️' },
-      { text: 'shines', emoji: '✨' }
+      { text: 'hides', emoji: '☁️', isCorrect: false },
+      { text: 'shines', emoji: '✨', isCorrect: true }
     ]
   });
 
@@ -67,7 +68,7 @@ export default function App() {
       return;
     }
 
-    const cacheKey = `worksheet_cache_v3_${sentenceInput.trim().toLowerCase()}`;
+    const cacheKey = `worksheet_cache_v4_${sentenceInput.trim().toLowerCase()}`;
     const cachedData = sessionStorage.getItem(cacheKey);
     
     if (cachedData) {
@@ -75,6 +76,7 @@ export default function App() {
         sentence: sentenceInput.trim(),
         ...JSON.parse(cachedData)
       });
+      setImagesLoadingCount(4);
       return;
     }
 
@@ -93,21 +95,21 @@ export default function App() {
         "mainEmoji": "A single emoji representing the main subject",
         "q1": "A multiple choice question about the color (What color is...?)",
         "q1Options": [
-          {"text": "wrong color", "emoji": "🔴"},
-          {"text": "correct color", "emoji": "🟢"},
-          {"text": "wrong color", "emoji": "🔵"}
+          {"text": "wrong color", "emoji": "🔴", "isCorrect": false},
+          {"text": "correct color", "emoji": "🟢", "isCorrect": true},
+          {"text": "wrong color", "emoji": "🔵", "isCorrect": false}
         ],
         "q2": "A multiple choice question about the main subject (What do you see?)",
         "q2Options": [
-          {"text": "wrong option", "emoji": "single emoji"},
-          {"text": "correct option", "emoji": "single emoji"},
-          {"text": "wrong option", "emoji": "single emoji"}
+          {"text": "wrong option", "emoji": "single emoji", "isCorrect": false},
+          {"text": "correct option", "emoji": "single emoji", "isCorrect": true},
+          {"text": "wrong option", "emoji": "single emoji", "isCorrect": false}
         ],
         "q3": "A multiple choice question about the action (What does it do?)",
         "q3Options": [
-          {"text": "wrong option", "imagePrompt": "short description of the subject doing this wrong action"},
-          {"text": "correct option", "imagePrompt": "short description of the subject doing the correct action"},
-          {"text": "wrong option", "imagePrompt": "short description of the subject doing this wrong action"}
+          {"text": "wrong option", "imagePrompt": "short description of the subject doing this wrong action", "isCorrect": false},
+          {"text": "correct option", "imagePrompt": "short description of the subject doing the correct action", "isCorrect": true},
+          {"text": "wrong option", "imagePrompt": "short description of the subject doing this wrong action", "isCorrect": false}
         ]
       }
       
@@ -133,8 +135,10 @@ export default function App() {
         sentence: sentenceInput,
         ...parsedData
       });
+      setImagesLoadingCount(4);
 
     } catch (err) {
+      setImagesLoadingCount(0);
       console.error("Full error:", err);
       console.error("Result Text was:", resultText);
       const errorMessage = (err.message || String(err)).toLowerCase();
@@ -153,8 +157,18 @@ export default function App() {
   const words = data.sentence.split(' ').filter(w => w.length > 0);
   const colorWordIndex = words.findIndex(w => w.toLowerCase().replace(/[^a-z]/g, '') === data.colorWord.toLowerCase());
 
+  const correctQ3Option = data.q3Options?.find(opt => opt.isCorrect);
+  const mainImagePrompt = (correctQ3Option && correctQ3Option.imagePrompt) ? correctQ3Option.imagePrompt : data.sentence;
+
   return (
-    <div className="min-h-screen bg-gray-100 p-4 sm:p-8 font-sans overflow-x-hidden selection:bg-gray-300">
+    <div className="min-h-screen bg-gray-100 p-4 sm:p-8 font-sans overflow-x-hidden selection:bg-gray-300 relative">
+      {(isGenerating || imagesLoadingCount > 0) && (
+        <div className="fixed inset-0 bg-black/70 z-[9999] flex flex-col items-center justify-center">
+          <Loader2 className="w-16 h-16 animate-spin text-white mb-6" />
+          <p className="text-white text-2xl font-bold tracking-wide">Drawing your worksheet...</p>
+        </div>
+      )}
+
       <div className="max-w-[1400px] mx-auto flex flex-col xl:flex-row gap-16 xl:gap-8 items-start">
         
         {/* Editor Form - Clean Solid Design */}
@@ -263,14 +277,16 @@ export default function App() {
                         <img 
                           src={data.sentence === 'The yellow sun shines.' 
                             ? '/sun.png'
-                            : `https://image.pollinations.ai/prompt/${encodeURIComponent(data.sentence + ", extremely cute simple 2d flat vector illustration for kids, bold solid colors, white background, perfectly symmetrical, flawless, no deformed features, high quality educational clipart")}?width=1024&height=1024&nologo=true&enhance=false`}
+                            : `https://image.pollinations.ai/prompt/${encodeURIComponent(mainImagePrompt + ", extremely cute simple 2d flat vector illustration for kids, bold solid colors, white background, perfectly symmetrical, flawless, no deformed features, high quality educational clipart")}?width=1024&height=1024&nologo=true&enhance=false`}
                           alt={data.sentence}
                           className="max-h-[300px] max-w-full object-contain rounded-xl shadow-sm border-2 border-gray-100 bg-white relative z-10"
                           onLoad={(e) => {
+                            setImagesLoadingCount(prev => Math.max(0, prev - 1));
                             const loader = e.target.previousSibling.previousSibling;
                             if (loader && loader.id === 'image-loader') loader.style.display = 'none';
                           }}
                           onError={(e) => {
+                            setImagesLoadingCount(prev => Math.max(0, prev - 1));
                             e.target.style.display = 'none';
                             const loader = e.target.previousSibling.previousSibling;
                             if (loader && loader.id === 'image-loader') loader.style.display = 'none';
@@ -358,7 +374,12 @@ export default function App() {
                               <img 
                                 src={`https://image.pollinations.ai/prompt/${encodeURIComponent(opt.imagePrompt + ", extremely cute simple 2d flat vector illustration for kids, bold solid colors, white background, perfectly symmetrical, isolated, no background, high resolution, soft lighting")}?width=120&height=120&nologo=true&enhance=false&model=turbo`}
                                 alt={opt.text}
-                                className="w-16 h-16 object-contain rounded-md"
+                                className="w-16 h-16 object-contain rounded-md bg-gray-50"
+                                onLoad={() => setImagesLoadingCount(prev => Math.max(0, prev - 1))}
+                                onError={(e) => {
+                                  setImagesLoadingCount(prev => Math.max(0, prev - 1));
+                                  e.target.style.display = 'none';
+                                }}
                               />
                             ) : (
                               <span className="text-4xl drop-shadow-sm w-12 text-center">{opt.emoji}</span>
