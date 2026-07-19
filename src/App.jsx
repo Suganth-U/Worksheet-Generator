@@ -7,6 +7,19 @@ puter.quiet = true;
 const A4_WIDTH_MM = 210;
 const A4_HEIGHT_MM = 297;
 
+function DelayedImage({ src, delay, alt, className, onLoad, onError }) {
+  const [show, setShow] = useState(false);
+  
+  useEffect(() => {
+    setShow(false);
+    const t = setTimeout(() => setShow(true), delay);
+    return () => clearTimeout(t);
+  }, [src, delay]);
+
+  if (!show) return null;
+  return <img src={src} alt={alt} className={className} onLoad={onLoad} onError={onError} crossOrigin="anonymous" />;
+}
+
 export default function App() {
   const componentRef = useRef(null);
   
@@ -274,23 +287,24 @@ export default function App() {
                         <span id="emoji-fallback" style={{ fontSize: '130px', display: 'none' }} className="leading-none drop-shadow-md absolute inset-0 flex items-center justify-center">
                           {data.mainEmoji}
                         </span>
-                        <img 
+                        <DelayedImage 
                           src={data.sentence === 'The yellow sun shines.' 
                             ? '/sun.png'
                             : `https://image.pollinations.ai/prompt/${encodeURIComponent(mainImagePrompt + ", extremely cute simple 2d flat vector illustration for kids, bold solid colors, white background, perfectly symmetrical, flawless, no deformed features, high quality educational clipart")}?width=1024&height=1024&nologo=true&enhance=false`}
+                          delay={0}
                           alt={data.sentence}
                           className="max-h-[300px] max-w-full object-contain rounded-xl shadow-sm border-2 border-gray-100 bg-white relative z-10"
                           onLoad={(e) => {
                             setImagesLoadingCount(prev => Math.max(0, prev - 1));
-                            const loader = e.target.previousSibling.previousSibling;
+                            const loader = e.target?.previousSibling?.previousSibling;
                             if (loader && loader.id === 'image-loader') loader.style.display = 'none';
                           }}
                           onError={(e) => {
                             setImagesLoadingCount(prev => Math.max(0, prev - 1));
-                            e.target.style.display = 'none';
-                            const loader = e.target.previousSibling.previousSibling;
+                            if (e.target) e.target.style.display = 'none';
+                            const loader = e.target?.previousSibling?.previousSibling;
                             if (loader && loader.id === 'image-loader') loader.style.display = 'none';
-                            const fallback = e.target.previousSibling;
+                            const fallback = e.target?.previousSibling;
                             if (fallback) fallback.style.display = 'flex';
                           }}
                         />
@@ -371,16 +385,19 @@ export default function App() {
                         {data.q3Options.map((opt, i) => (
                           <div key={i} className="flex flex-row items-center gap-4 w-full">
                             {opt.imagePrompt ? (
-                              <img 
-                                src={`https://image.pollinations.ai/prompt/${encodeURIComponent(opt.imagePrompt + ", extremely cute simple 2d flat vector illustration for kids, bold solid colors, white background, perfectly symmetrical, isolated, no background, high resolution, soft lighting")}?width=120&height=120&nologo=true&enhance=false&model=turbo`}
-                                alt={opt.text}
-                                className="w-16 h-16 object-contain rounded-md bg-gray-50"
-                                onLoad={() => setImagesLoadingCount(prev => Math.max(0, prev - 1))}
-                                onError={(e) => {
-                                  setImagesLoadingCount(prev => Math.max(0, prev - 1));
-                                  e.target.style.display = 'none';
-                                }}
-                              />
+                              <div className="w-16 h-16 flex items-center justify-center bg-gray-50 rounded-md">
+                                <DelayedImage 
+                                  src={`https://image.pollinations.ai/prompt/${encodeURIComponent(opt.imagePrompt + ", extremely cute simple 2d flat vector illustration for kids, bold solid colors, white background, perfectly symmetrical, isolated, no background, high resolution, soft lighting")}?width=120&height=120&nologo=true&enhance=false&model=turbo`}
+                                  delay={(i + 1) * 1500}
+                                  alt={opt.text}
+                                  className="w-full h-full object-contain rounded-md"
+                                  onLoad={() => setImagesLoadingCount(prev => Math.max(0, prev - 1))}
+                                  onError={(e) => {
+                                    setImagesLoadingCount(prev => Math.max(0, prev - 1));
+                                    if (e.target) e.target.style.display = 'none';
+                                  }}
+                                />
+                              </div>
                             ) : (
                               <span className="text-4xl drop-shadow-sm w-12 text-center">{opt.emoji}</span>
                             )}
