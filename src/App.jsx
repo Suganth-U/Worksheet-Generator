@@ -111,6 +111,7 @@ export default function App() {
             type: Type.OBJECT,
             properties: {
               colorWord: { type: Type.STRING },
+              mainEmoji: { type: Type.STRING },
               actionWord: { type: Type.STRING },
               q1: { type: Type.STRING },
               q1Options: { 
@@ -246,8 +247,13 @@ export default function App() {
                           </span>
                         ))}
                       </h1>
-                      <div className="flex-grow flex items-center justify-center pb-4">
-                        <span style={{ fontSize: '130px' }} className="leading-none drop-shadow-md">{data.mainEmoji}</span>
+                      <div className="flex-grow flex items-center justify-center p-4">
+                        <img 
+                          src={`https://image.pollinations.ai/prompt/${encodeURIComponent(data.sentence + ", simple 2d cartoon drawing for kids, bold solid colors, white background, educational illustration")}?width=400&height=400&nologo=true`}
+                          alt={data.sentence}
+                          className="max-h-full max-w-full object-contain rounded-xl shadow-sm border-2 border-gray-100"
+                          crossOrigin="anonymous"
+                        />
                       </div>
                     </div>
 
