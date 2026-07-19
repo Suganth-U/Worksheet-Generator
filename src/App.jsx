@@ -85,11 +85,13 @@ export default function App() {
     const cachedData = sessionStorage.getItem(cacheKey);
     
     if (cachedData) {
+      const parsed = JSON.parse(cachedData);
       setData({
         sentence: sentenceInput.trim(),
-        ...JSON.parse(cachedData)
+        ...parsed
       });
-      setImagesLoadingCount(4);
+      const q3ImagesCount = parsed.q3Options?.filter(opt => opt.imagePrompt).length || 0;
+      setImagesLoadingCount(1 + q3ImagesCount);
       return;
     }
 
@@ -148,7 +150,8 @@ export default function App() {
         sentence: sentenceInput,
         ...parsedData
       });
-      setImagesLoadingCount(4);
+      const q3ImagesCount = parsedData.q3Options?.filter(opt => opt.imagePrompt).length || 0;
+      setImagesLoadingCount(1 + q3ImagesCount);
 
     } catch (err) {
       setImagesLoadingCount(0);
@@ -174,18 +177,18 @@ export default function App() {
   const mainImagePrompt = (correctQ3Option && correctQ3Option.imagePrompt) ? correctQ3Option.imagePrompt : data.sentence;
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4 sm:p-8 font-sans overflow-x-hidden selection:bg-gray-300 relative">
+    <div className="min-h-screen bg-gray-100 p-4 sm:p-8 font-sans overflow-x-hidden selection:bg-gray-300 relative print:bg-white print:p-0">
       {(isGenerating || imagesLoadingCount > 0) && (
-        <div className="fixed inset-0 bg-black/70 z-[9999] flex flex-col items-center justify-center">
+        <div className="fixed inset-0 bg-black/70 z-[9999] flex flex-col items-center justify-center print:hidden">
           <Loader2 className="w-16 h-16 animate-spin text-white mb-6" />
           <p className="text-white text-2xl font-bold tracking-wide">Drawing your worksheet...</p>
         </div>
       )}
 
-      <div className="max-w-[1400px] mx-auto flex flex-col xl:flex-row gap-16 xl:gap-8 items-start">
+      <div className="max-w-[1400px] mx-auto flex flex-col xl:flex-row gap-16 xl:gap-8 items-start print:block print:max-w-none print:m-0 print:gap-0">
         
         {/* Editor Form - Clean Solid Design */}
-        <div className="w-full xl:w-[350px] flex-shrink-0 flex flex-col gap-6 sticky top-8 z-10">
+        <div className="w-full xl:w-[350px] flex-shrink-0 flex flex-col gap-6 sticky top-8 z-10 print:hidden">
           
           <div className="text-center xl:text-left mb-2">
             <h1 className="text-4xl font-extrabold tracking-tight text-black mb-2">
@@ -235,13 +238,13 @@ export default function App() {
         </div>
 
         {/* Scalable Live Preview */}
-        <div className="w-full flex-1 flex justify-center pb-12 xl:pb-0">
+        <div className="w-full flex-1 flex justify-center pb-12 xl:pb-0 print:block print:pb-0">
           <div 
-            className="relative flex justify-center w-full transition-all duration-300 ease-out" 
+            className="relative flex justify-center w-full transition-all duration-300 ease-out print:!h-auto print:block" 
             style={{ height: `calc(${A4_HEIGHT_MM}mm * ${scale})` }}
           >
             <div 
-              className="absolute top-0 origin-top transition-transform duration-300 ease-out print:!scale-100 print:!relative shadow-xl" 
+              className="absolute top-0 origin-top transition-transform duration-300 ease-out print:!transform-none print:!relative print:!scale-100 shadow-xl print:shadow-none" 
               style={{ transform: `scale(${scale})` }}
             >
               
@@ -387,8 +390,8 @@ export default function App() {
                             {opt.imagePrompt ? (
                               <div className="w-16 h-16 flex items-center justify-center bg-gray-50 rounded-md">
                                 <DelayedImage 
-                                  src={`https://image.pollinations.ai/prompt/${encodeURIComponent(opt.imagePrompt + ", extremely cute simple 2d flat vector illustration for kids, bold solid colors, white background, perfectly symmetrical, isolated, no background, high resolution, soft lighting")}?width=120&height=120&nologo=true&enhance=false&model=turbo`}
-                                  delay={(i + 1) * 1500}
+                                  src={`https://image.pollinations.ai/prompt/${encodeURIComponent(opt.imagePrompt + ", extremely cute simple 2d flat vector illustration for kids, bold solid colors, white background, perfectly symmetrical, isolated, no background, high resolution, soft lighting")}?width=120&height=120&nologo=true&enhance=false`}
+                                  delay={0}
                                   alt={opt.text}
                                   className="w-full h-full object-contain rounded-md"
                                   onLoad={() => setImagesLoadingCount(prev => Math.max(0, prev - 1))}
