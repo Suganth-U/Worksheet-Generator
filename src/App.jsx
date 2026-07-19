@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import { Printer, Sparkles, Loader2 } from 'lucide-react';
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenAI, Type } from '@google/genai';
 
 const A4_WIDTH_MM = 210;
 const A4_HEIGHT_MM = 297;
@@ -106,7 +106,29 @@ export default function App() {
         model: 'gemini-3.5-flash',
         contents: prompt,
         config: {
-          responseMimeType: 'application/json'
+          responseMimeType: 'application/json',
+          responseSchema: {
+            type: Type.OBJECT,
+            properties: {
+              colorWord: { type: Type.STRING },
+              actionWord: { type: Type.STRING },
+              q1: { type: Type.STRING },
+              q1Options: { 
+                type: Type.ARRAY, 
+                items: { type: Type.OBJECT, properties: { text: { type: Type.STRING }, emoji: { type: Type.STRING } } } 
+              },
+              q2: { type: Type.STRING },
+              q2Options: { 
+                type: Type.ARRAY, 
+                items: { type: Type.OBJECT, properties: { text: { type: Type.STRING }, emoji: { type: Type.STRING } } } 
+              },
+              q3: { type: Type.STRING },
+              q3Options: { 
+                type: Type.ARRAY, 
+                items: { type: Type.OBJECT, properties: { text: { type: Type.STRING }, emoji: { type: Type.STRING } } } 
+              }
+            }
+          }
         }
       });
 
