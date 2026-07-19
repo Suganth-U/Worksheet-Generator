@@ -298,10 +298,10 @@ export default function App() {
                       {/* Build */}
                       <div className="border-b-4 border-black p-3 flex-grow bg-white flex flex-col">
                         <p className="text-2xl font-medium mb-4">2. Build the sentence.</p>
-                        <div className="flex gap-3 flex-wrap justify-center mt-auto mb-4">
-                          {words.map((_, i) => (
-                            <div key={i} className="w-20 h-20 border-[3px] border-gray-300 bg-white flex items-center justify-center shadow-sm">
-                              <div className="w-12 h-8 border-2 border-dashed border-gray-300"></div>
+                        <div className="flex gap-4 flex-wrap justify-center mt-auto mb-4">
+                          {words.map((word, i) => (
+                            <div key={i} className="border-[4px] border-gray-300 border-dashed bg-[#F9F9F9] px-10 py-4 min-w-[100px] flex items-center justify-center">
+                              <span className="text-4xl font-medium tracking-wide text-transparent select-none">{word}</span>
                             </div>
                           ))}
                         </div>
