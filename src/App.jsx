@@ -258,6 +258,7 @@ export default function App() {
                             </span>
                           );
                         })}
+                      </h1>
                       <div className="flex-grow flex items-center justify-center pb-4 relative min-h-[200px]">
                         <span id="emoji-fallback" style={{ fontSize: '130px' }} className="leading-none drop-shadow-md absolute inset-0 flex items-center justify-center">
                           {data.mainEmoji}
