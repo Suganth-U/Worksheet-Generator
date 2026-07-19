@@ -96,11 +96,13 @@ export default function App() {
         "q3": "A multiple choice question about the action (What does it do?)",
         "q3Options": [
           {"text": "wrong option", "emoji": "single emoji"},
-          {"text": "correct option", "emoji": "single emoji"}
+          {"text": "correct option", "emoji": "single emoji"},
+          {"text": "wrong option", "emoji": "single emoji"}
         ]
       }
       
-      CRITICAL: Ensure the response is ONLY valid JSON. Make sure options are randomized so the correct answer isn't always in the same spot. Ensure emojis are relevant and standard.
+      CRITICAL: Ensure the response is ONLY valid JSON. Make sure options are randomized so the correct answer isn't always in the same spot. 
+      For action questions (q3), use an emoji that makes sense for the subject (e.g., if a frog jumps, use a frog 🐸, not a kangaroo 🦘).
       `;
 
       const response = await ai.models.generateContent({
@@ -256,9 +258,25 @@ export default function App() {
                             </span>
                           );
                         })}
-                      </h1>
-                      <div className="flex-grow flex items-center justify-center pb-4">
-                        <span style={{ fontSize: '130px' }} className="leading-none drop-shadow-md">{data.mainEmoji}</span>
+                      <div className="flex-grow flex items-center justify-center pb-4 relative min-h-[200px]">
+                        <span id="emoji-fallback" style={{ fontSize: '130px' }} className="leading-none drop-shadow-md absolute inset-0 flex items-center justify-center">
+                          {data.mainEmoji}
+                        </span>
+                        <img 
+                          src={`https://image.pollinations.ai/prompt/${encodeURIComponent(data.sentence + ", simple 2d cartoon drawing for kids, bold solid colors, white background, educational illustration")}?width=400&height=400&nologo=true`}
+                          alt={data.sentence}
+                          className="max-h-[300px] max-w-full object-contain rounded-xl shadow-sm border-2 border-gray-100 bg-white relative z-10 opacity-0 transition-opacity duration-500"
+                          onLoad={(e) => {
+                            e.target.style.opacity = '1';
+                            const fallback = e.target.previousSibling;
+                            if (fallback) fallback.style.display = 'none';
+                          }}
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            const fallback = e.target.previousSibling;
+                            if (fallback) fallback.style.display = 'flex';
+                          }}
+                        />
                       </div>
                     </div>
 
