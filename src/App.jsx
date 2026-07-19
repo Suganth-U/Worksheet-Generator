@@ -117,7 +117,7 @@ export default function App() {
       `;
 
       const response = await ai.models.generateContent({
-        model: 'gemini-3.5-flash',
+        model: 'gemini-1.5-flash',
         contents: prompt,
         config: {
           responseMimeType: 'application/json',
@@ -283,7 +283,7 @@ export default function App() {
                         </span>
                         <img 
                           src={data.sentence === 'The yellow sun shines.' 
-                            ? '/default-sun.jpg' 
+                            ? '/sun.png'
                             : `https://image.pollinations.ai/prompt/${encodeURIComponent(data.sentence + ", extremely cute simple 2d flat vector illustration for kids, bold solid colors, white background, perfectly symmetrical, flawless, no deformed features, high quality educational clipart")}?width=1024&height=1024&nologo=true&enhance=false`}
                           alt={data.sentence}
                           className="max-h-[300px] max-w-full object-contain rounded-xl shadow-sm border-2 border-gray-100 bg-white relative z-10"
