@@ -67,7 +67,7 @@ export default function App() {
       return;
     }
 
-    const cacheKey = `worksheet_cache_v2_${sentenceInput.trim().toLowerCase()}`;
+    const cacheKey = `worksheet_cache_v3_${sentenceInput.trim().toLowerCase()}`;
     const cachedData = sessionStorage.getItem(cacheKey);
     
     if (cachedData) {
@@ -112,7 +112,7 @@ export default function App() {
       }
       
       CRITICAL: Ensure the response is ONLY valid JSON. Do not include markdown code blocks like \`\`\`json. Make sure options are randomized so the correct answer isn't always in the same spot. 
-      For action questions (q3), the emoji MUST visually represent the specific ACTION in that option (e.g., if the option is "It swims", use 🐟 or 🏊; if "It flies", use 🦅 or ✈️; if "It crawls", use 🐛). Do NOT just repeat the main subject emoji for all three options.
+      For action questions (q3), the text for the options MUST explicitly name the main subject doing the action, rather than using pronouns (e.g., use "A parrot crawls" instead of "It crawls"). The emoji MUST visually represent the specific ACTION in that option (e.g., if the option is "A parrot swims", use 🐟 or 🏊; if "A parrot flies", use 🦅 or ✈️; if "A parrot crawls", use 🐛). Do NOT just repeat the main subject emoji for all three options.
       `;
 
       resultText = await puter.ai.chat(prompt, {
