@@ -326,15 +326,13 @@ export default function App() {
                         <p className="font-medium text-xl leading-tight px-1">4. {data.q1}</p>
                         <p className="text-base mt-1 opacity-80">(circle)</p>
                       </div>
-                      <div className="flex-grow flex flex-col justify-around py-4 bg-white">
-                        <div className="flex justify-evenly items-end h-[80%] px-2">
-                          {data.q1Options.map((opt, i) => (
-                            <div key={i} className="flex flex-col items-center gap-3 w-1/3 text-center">
-                              <span className="text-5xl drop-shadow-sm">{opt.emoji}</span>
-                              <span className="font-medium text-lg leading-tight tracking-wide break-words">{opt.text}</span>
-                            </div>
-                          ))}
-                        </div>
+                      <div className="flex-grow flex flex-col justify-evenly py-2 px-6 bg-white">
+                        {data.q1Options.map((opt, i) => (
+                          <div key={i} className="flex flex-row items-center gap-4 w-full">
+                            <span className="text-4xl drop-shadow-sm w-12 text-center">{opt.emoji}</span>
+                            <span className="font-medium text-xl leading-tight tracking-wide">{opt.text}</span>
+                          </div>
+                        ))}
                       </div>
                     </div>
 
@@ -344,15 +342,13 @@ export default function App() {
                         <p className="font-medium text-xl leading-tight px-1">5. {data.q2}</p>
                         <p className="text-base mt-1 opacity-80">(circle)</p>
                       </div>
-                      <div className="flex-grow flex flex-col justify-around py-4 bg-[#FFFBF7]">
-                        <div className="flex justify-evenly items-end h-[80%] px-2">
-                          {data.q2Options.map((opt, i) => (
-                            <div key={i} className="flex flex-col items-center gap-3 w-1/3 text-center">
-                              <span className="text-5xl drop-shadow-sm">{opt.emoji}</span>
-                              <span className="font-medium text-lg leading-tight tracking-wide break-words">{opt.text}</span>
-                            </div>
-                          ))}
-                        </div>
+                      <div className="flex-grow flex flex-col justify-evenly py-2 px-6 bg-[#FFFBF7]">
+                        {data.q2Options.map((opt, i) => (
+                          <div key={i} className="flex flex-row items-center gap-4 w-full">
+                            <span className="text-4xl drop-shadow-sm w-12 text-center">{opt.emoji}</span>
+                            <span className="font-medium text-xl leading-tight tracking-wide">{opt.text}</span>
+                          </div>
+                        ))}
                       </div>
                     </div>
 
@@ -362,15 +358,13 @@ export default function App() {
                         <p className="font-medium text-xl leading-tight px-1">6. {data.q3}</p>
                         <p className="text-base mt-1 opacity-80">(circle)</p>
                       </div>
-                      <div className="flex-grow flex flex-col justify-around py-4 bg-white">
-                        <div className="flex justify-evenly items-end h-[80%] px-2">
-                          {data.q3Options.map((opt, i) => (
-                            <div key={i} className="flex flex-col items-center gap-3 w-1/3 text-center">
-                              <span className="text-5xl drop-shadow-sm">{opt.emoji}</span>
-                              <span className="font-medium text-lg leading-tight tracking-wide break-words">{opt.text}</span>
-                            </div>
-                          ))}
-                        </div>
+                      <div className="flex-grow flex flex-col justify-evenly py-2 px-6 bg-white">
+                        {data.q3Options.map((opt, i) => (
+                          <div key={i} className="flex flex-row items-center gap-4 w-full">
+                            <span className="text-4xl drop-shadow-sm w-12 text-center">{opt.emoji}</span>
+                            <span className="font-medium text-xl leading-tight tracking-wide">{opt.text}</span>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </div>
