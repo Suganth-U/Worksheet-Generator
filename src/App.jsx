@@ -66,6 +66,17 @@ export default function App() {
       return;
     }
 
+    const cacheKey = `worksheet_cache_${sentenceInput.trim().toLowerCase()}`;
+    const cachedData = sessionStorage.getItem(cacheKey);
+    
+    if (cachedData) {
+      setData({
+        sentence: sentenceInput.trim(),
+        ...JSON.parse(cachedData)
+      });
+      return;
+    }
+
     setIsGenerating(true);
     setError('');
 
@@ -137,6 +148,7 @@ export default function App() {
 
       resultText = response.text;
       const parsedData = JSON.parse(resultText);
+      sessionStorage.setItem(cacheKey, JSON.stringify(parsedData));
 
       setData({
         sentence: sentenceInput,
