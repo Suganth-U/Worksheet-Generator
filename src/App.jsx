@@ -69,6 +69,7 @@ export default function App() {
     setIsGenerating(true);
     setError('');
 
+    let resultText = '';
     try {
       const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
       
@@ -106,7 +107,6 @@ export default function App() {
         model: 'gemini-3.5-flash',
         contents: prompt,
         config: {
-          maxOutputTokens: 1000,
           responseMimeType: 'application/json',
           responseSchema: {
             type: Type.OBJECT,
@@ -133,7 +133,7 @@ export default function App() {
         }
       });
 
-      const resultText = response.text;
+      resultText = response.text;
       const parsedData = JSON.parse(resultText);
 
       setData({
@@ -142,10 +142,13 @@ export default function App() {
       });
 
     } catch (err) {
-      console.error(err);
+      console.error("Full error:", err);
+      console.error("Result Text was:", resultText);
       const errorMessage = (err.message || String(err)).toLowerCase();
       if (errorMessage.includes('429') || errorMessage.includes('quota') || errorMessage.includes('rate limit')) {
         setError('Token limit reached. Please try again after some time.');
+      } else if (err instanceof SyntaxError) {
+        setError(`JSON Error: ${err.message}. Raw text: ${resultText.substring(0, 100)}...`);
       } else {
         setError('Failed to create worksheet. Please try again.');
       }
