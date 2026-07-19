@@ -293,7 +293,7 @@ export default function App() {
                         <DelayedImage 
                           src={data.sentence === 'The yellow sun shines.' 
                             ? '/sun.png'
-                            : `https://image.pollinations.ai/prompt/${encodeURIComponent(mainImagePrompt + ", extremely cute simple 2d flat vector illustration for kids, bold solid colors, white background, perfectly symmetrical, flawless, no deformed features, high quality educational clipart")}?width=1024&height=1024&nologo=true&enhance=false`}
+                            : `https://image.pollinations.ai/prompt/${encodeURIComponent(mainImagePrompt + ", extremely cute simple 2d flat vector illustration for kids, bold solid colors, white background, perfectly symmetrical, flawless, no deformed features, high quality educational clipart")}?width=1024&height=1024&nologo=true&enhance=false&seed=42`}
                           delay={0}
                           alt={data.sentence}
                           className="w-full h-full object-contain rounded-xl shadow-sm border-2 border-gray-100 bg-white relative z-10 p-2"
@@ -390,8 +390,8 @@ export default function App() {
                             {opt.imagePrompt ? (
                               <div className="w-16 h-16 flex items-center justify-center bg-gray-50 rounded-md">
                                 <DelayedImage 
-                                  src={`https://image.pollinations.ai/prompt/${encodeURIComponent(opt.imagePrompt + ", extremely cute simple 2d flat vector illustration for kids, bold solid colors, white background, perfectly symmetrical, isolated, no background, high resolution, soft lighting")}?width=120&height=120&nologo=true&enhance=false`}
-                                  delay={0}
+                                  src={`https://image.pollinations.ai/prompt/${encodeURIComponent(opt.imagePrompt + ", extremely cute simple 2d flat vector illustration for kids, bold solid colors, white background, perfectly symmetrical, isolated, no background, high resolution, soft lighting")}?width=120&height=120&nologo=true&enhance=false&model=turbo&seed=42`}
+                                  delay={(i + 1) * 1200}
                                   alt={opt.text}
                                   className="w-full h-full object-contain rounded-md"
                                   onLoad={() => setImagesLoadingCount(prev => Math.max(0, prev - 1))}
